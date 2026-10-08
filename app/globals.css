@@ -21,12 +21,7 @@ body {
   margin: 0;
   min-height: 100vh;
   color: var(--ink);
-  background:
-    radial-gradient(circle at 5% 5%, rgba(244,190,198,.95), transparent 34%),
-    radial-gradient(circle at 96% 16%, rgba(199,188,235,.92), transparent 34%),
-    radial-gradient(circle at 10% 92%, rgba(181,220,199,.9), transparent 34%),
-    radial-gradient(circle at 94% 90%, rgba(247,220,151,.88), transparent 32%),
-    var(--paper);
+  background: #e9e4f7;
   font-family: "DM Sans", system-ui, sans-serif;
 }
 button, input, textarea { font: inherit; }
