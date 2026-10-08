@@ -22,10 +22,10 @@ body {
   min-height: 100vh;
   color: var(--ink);
   background:
-    radial-gradient(circle at 8% 4%, rgba(245,227,227,.9), transparent 31%),
-    radial-gradient(circle at 94% 18%, rgba(233,229,243,.82), transparent 30%),
-    radial-gradient(circle at 18% 92%, rgba(227,238,232,.78), transparent 30%),
-    radial-gradient(circle at 90% 88%, rgba(245,239,217,.72), transparent 28%),
+    radial-gradient(circle at 5% 5%, rgba(244,190,198,.95), transparent 34%),
+    radial-gradient(circle at 96% 16%, rgba(199,188,235,.92), transparent 34%),
+    radial-gradient(circle at 10% 92%, rgba(181,220,199,.9), transparent 34%),
+    radial-gradient(circle at 94% 90%, rgba(247,220,151,.88), transparent 32%),
     var(--paper);
   font-family: "DM Sans", system-ui, sans-serif;
 }
