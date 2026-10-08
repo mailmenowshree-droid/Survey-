@@ -1,0 +1,8 @@
+import { NextResponse } from "next/server";
+import { Pool } from "pg";
+export const runtime="nodejs";
+let pool:Pool|null=null;
+function getPool(){if(!process.env.DATABASE_URL)return null;pool??=new Pool({connectionString:process.env.DATABASE_URL,ssl:process.env.DATABASE_URL.includes("localhost")?false:{rejectUnauthorized:false}});return pool}
+function ok(r:Request){const p=process.env.ADMIN_PASSWORD,h=r.headers.get("authorization")||"";if(!p||!h.startsWith("Basic "))return false;try{const d=atob(h.slice(6)),i=d.indexOf(":");return i>=0&&d.slice(i+1)===p}catch{return false}}
+function cell(v:unknown){const s=typeof v==="string"?v:JSON.stringify(v??"");return '"'+s.replaceAll('"','""')+'"'}
+export async function GET(r:Request){if(!ok(r))return NextResponse.json({error:"Unauthorized"},{status:401});const db=getPool();if(!db)return NextResponse.json({error:"Database is not configured"},{status:503});const q=await db.query("SELECT id,created_at,source,answers FROM survey_responses ORDER BY created_at DESC");const rows=q.rows as any[];const keys=Array.from(new Set(rows.flatMap(x=>Object.keys(x.answers||{}))));const lines=[["id","created_at","source",...keys].map(cell).join(",")];for(const x of rows)lines.push([x.id,new Date(x.created_at).toISOString(),x.source||"",...keys.map(k=>x.answers?.[k]??"")].map(cell).join(","));return new NextResponse(lines.join("\n"),{headers:{"Content-Type":"text/csv; charset=utf-8","Content-Disposition":'attachment; filename="hospitality-survey-responses.csv"'}})}
