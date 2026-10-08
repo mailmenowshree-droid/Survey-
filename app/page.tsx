@@ -21,7 +21,8 @@ const questions: Question[] = [
   { id: "automate", type: "multi", max: 3, title: "If you could remove three repetitive tasks tomorrow, what would they be?", options: ["Answering common questions", "Taking reservations / enquiries", "Following up with customers", "Sending prices / menus", "Order or booking updates", "Collecting customer details", "Internal reporting", "Other"] },
   { id: "systems", type: "multi", max: 5, title: "What tools do you currently rely on?", options: ["WhatsApp Business", "POS", "PMS / booking system", "CRM", "Spreadsheets", "Instagram / Facebook", "Nothing specific", "Other"] },
   { id: "value", type: "single", title: "If a tool reliably saved staff time and reduced missed enquiries, how would you react?", options: ["I would not pay for it", "Maybe, depending on the result", "I would consider paying", "I would actively look for something like this"] },
-  { id: "price", type: "single", title: "What monthly price would feel reasonable for something genuinely useful?", options: ["₹0–499", "₹500–1,499", "₹1,500–2,999", "₹3,000+", "It would depend on the value"] },
+  { id: "value_score", type: "single", title: "If a tool could reliably save your staff time and reduce missed customer enquiries, how valuable would that be to your business?", options: ["Not valuable", "Slightly valuable", "Moderately valuable", "Very valuable", "Extremely valuable"] },
+  { id: "price", type: "single", title: "Assuming it genuinely delivered that result, what monthly price would feel reasonable?", options: ["I wouldn’t pay for it", "Under ₹1,000/month", "₹1,000–2,500/month", "₹2,500–5,000/month", "₹5,000–10,000/month", "₹10,000+/month", "It depends on the results it delivers"] },
   { id: "biggest", type: "text", title: "One last thing: what is the single biggest operational problem you wish someone would solve?", placeholder: "Be blunt. A sentence or two is enough." },
   { id: "contact", type: "text", title: "Want us to share what we learn?", placeholder: "Optional — name, phone or email" }
 ];
@@ -65,6 +66,8 @@ export default function Home() {
   }
 
   const hasAnswer = typeof value === "string" ? value.trim().length > 0 : Array.isArray(value) ? value.length > 0 : false;
+  const isOptional = question.id === "contact";
+  const canContinue = hasAnswer || isOptional;
 
   async function submit() {
     setSaving(true);
@@ -93,7 +96,7 @@ export default function Home() {
           <h1>What is making hospitality harder than it should be?</h1>
           <p className="intro">We&apos;re speaking with owners and operators to understand the everyday problems that actually cost time, attention and revenue. No product pitch. Just honest answers.</p>
           <button className="start" onClick={() => setStarted(true)}>Take the 2-minute survey →</button>
-          <div className="meta-row"><span>13 quick questions</span><span>Mostly one-tap answers</span><span>Anonymous by default</span></div>
+          <div className="meta-row"><span>14 quick questions</span><span>Mostly one-tap answers</span><span>Anonymous by default</span></div>
         </main>
         <footer className="footer">Your answers will be used only for this research.</footer>
       </div>
@@ -121,7 +124,7 @@ export default function Home() {
           <div className="progress-top"><span>Question {step + 1} of {questions.length}</span><span>{Math.round(progress)}%</span></div>
           <div className="progress"><span style={{ width: progress + "%" }} /></div>
         </div>
-        <div className="question-kicker">{question.type === "multi" ? "Choose up to " + question.max : "Quick question"}</div>
+        <div className="question-kicker">{question.id === "contact" ? "Optional" : question.type === "multi" ? "Choose up to " + question.max : "Quick question"}</div>
         <div className="question">{question.title}</div>
 
         {question.type === "text" ? (
@@ -143,9 +146,9 @@ export default function Home() {
         <div className="actions">
           {step > 0 && <button className="back" onClick={() => setStep(s => s - 1)}>Back</button>}
           {step < questions.length - 1 ? (
-            <button className="next" disabled={!hasAnswer} onClick={() => setStep(s => s + 1)}>Continue →</button>
+            <button className="next" disabled={!canContinue} onClick={() => setStep(s => s + 1)}>Continue →</button>
           ) : (
-            <button className="next" disabled={saving || !hasAnswer} onClick={submit}>{saving ? "Saving…" : "Finish survey →"}</button>
+            <button className="next" disabled={saving || !canContinue} onClick={submit}>{saving ? "Saving…" : "Finish survey →"}</button>
           )}
         </div>
       </main>
